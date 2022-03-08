@@ -17,7 +17,7 @@ class APIResponse: HandyJSON {
 }
 
 class Entries: HandyJSON { //MODEL CHO ENTRIES
-    var APi = ""
+    var API = ""
     var Description = ""
     var Auth = ""
     var HTTPS = false

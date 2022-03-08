@@ -10,7 +10,7 @@ import Alamofire
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
+    var arrayData = [Entries]()
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -19,14 +19,14 @@ class ViewController: UIViewController {
     }
     
     func setupTableView() {
-//        tableView.delegate = self
-//        tableView.dataSource = self
-//
+        tableView.delegate = self
+        tableView.dataSource = self
+
         let nib = UINib(nibName: "TableCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "tableCell")
     }
     
-    func getDataFromAPI() { //BƯỚC 2 -
+    func getDataFromAPI() { //BƯỚC 2 - dung alamorfire
         if let url = URL(string: "https://api.publicapis.org/entries") {
             AF.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil, interceptor: nil, requestModifier: nil).responseJSON { response in //response là dữ liệu trả vể
 //                dump(response.value) kiểm tra xem có dữ liệu về hay chưa
@@ -37,10 +37,11 @@ class ViewController: UIViewController {
                         //dict là tập trả về có thể chọn: như là entries
                         if let data = dict["entries"] as? [NSDictionary] { //NSDictionary là handy json
                             //map về kiểu object của mình
-                            let result = data.map()
+                            let result = data.map({Entries.deserialize(from: $0)!})
                             //
-                        } else {
-                            
+                            self.arrayData = result
+//                            self.arrayData.append(contentsOf: result)
+                            self.tableView.reloadData()
                         }
                     } else {
                         print("Khong co du lieu tra ve")
@@ -51,16 +52,29 @@ class ViewController: UIViewController {
     }
 }
 
-//extension ViewController: UITableViewDelegate, UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        <#code#>
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        <#code#>
-//    }
-//
-//}
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return arrayData.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tableCell") as! TableCell
+        let data = arrayData[indexPath.row]
+        cell.lbAPI.text = data.API
+        cell.lbDescription.text = data.Description
+        cell.lbAuth.text = data.Auth
+        cell.lbHTTPs.text = "\(data.HTTPS)"
+        cell.lbCors.text = data.Cors
+        cell.lbLink.text = data.Link
+        cell.lbCategory.text = data.Category
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 217
+    }
+
+}
 
 
 
