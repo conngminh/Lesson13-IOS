@@ -106,7 +106,7 @@
                 <outlet property="lbHTTPs" destination="bCn-nm-73f" id="Zcs-Mu-qGD"/>
                 <outlet property="lbLink" destination="KMC-J0-OOQ" id="fkm-xG-Tz5"/>
             </connections>
-            <point key="canvasLocation" x="227.536231884058" y="156.69642857142856"/>
+            <point key="canvasLocation" x="471" y="137"/>
         </tableViewCell>
     </objects>
     <resources>
